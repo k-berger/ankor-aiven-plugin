@@ -75,8 +75,8 @@ func createRequest(method string, path string, data map[string]interface{}) (*ht
 	var req *http.Request
 
 	if data != nil {
-		reqBody, err := json.Marshal(data)
-		if err != nil {
+		reqBody, marshalError := json.Marshal(data)
+		if marshalError != nil {
 			return nil, errors.New("Error marshaling request-body!")
 		}
 		req, err = http.NewRequest(method, AIVEN_BASE_URL+path, bytes.NewBuffer(reqBody))

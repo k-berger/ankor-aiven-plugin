@@ -32,7 +32,10 @@ func ListProjects() (map[string]string, error) {
 
 		result := make(map[string]string)
 		var data = make(map[string]interface{})
-		json.NewDecoder(response.Body).Decode(&data)
+		decoderError := json.NewDecoder(response.Body).Decode(&data)
+		if decoderError != nil {
+			return nil, errors.New("Can't decode response body.")
+		}
 		for key, value := range data["project_membership"].(map[string]interface{}) {
 			result[key] = value.(string)
 		}
@@ -59,7 +62,10 @@ func ListServices(projectName string) (map[string]ServiceDescription, error) {
 
 		result := make(map[string]ServiceDescription)
 		var data = make(map[string]interface{})
-		json.NewDecoder(response.Body).Decode(&data)
+		decoderError := json.NewDecoder(response.Body).Decode(&data)
+		if decoderError != nil {
+			return nil, errors.New("Can't decode response body.")
+		}
 		for _, value := range data["services"].([]interface{}) {
 			accessor := value.(map[string]interface{})
 			result[accessor["service_name"].(string)] = transformToServiceDescription(accessor)
